@@ -11,6 +11,8 @@
 
 from numpy import random
 
+# Last method that has to be correctly implemented
+# with the EXTENDED EUCLIDEAN ALGORITHM
 def calculateD(e, module):
 	d = 0
 	while True:
@@ -116,8 +118,8 @@ def mainRSA(digits = 16, plain = 277):
 
 
 def main():
-	# test(16)
-	mainRSA(3)
+	test(16)
+	mainRSA(4)
 
 def test(digits = 16):
 	print "---------- TEST TOTIENT ----------"
@@ -129,9 +131,9 @@ def test(digits = 16):
 	print "---------- TEST DIGITS ----------"
 	testDigits(digits)
 	print "------- TEST DIGITS ENDED -------\n"
-	print "---------- TEST DIG LEN ----------"
+	print "---------- TEST DIGITS LEN ----------"
 	testDigitsLen(digits)
-	print "------- TEST DIG LEN ENDED -------\n"
+	print "------- TEST DIGITS LEN ENDED -------\n"
 	
 
 
