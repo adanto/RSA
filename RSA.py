@@ -5,23 +5,24 @@
 # n = p * q
 # Calculate totient(n) = (p - 1)(q - 1)
 # Select integer e -> gcd (totient(n), e) = 1; 1 < e < totient(n)
-# Calculate d -> d = e^-1 (mod totient(n))
+# In this case e = 2^16 + 1
+# Calculate d -> d * e = 1 (mod totient(n))
 
-# Encryption 
-# C = M^e mod n
-
-# Decryption
-# M = C^d mod n
 
 from numpy import random
-from math import sqrt
+
+def calculateD(e, module):
+	d = 0
+	while True:
+		if d * e % module == 1:
+			return d
+		d += 1
 
 # Totient:
 # Function that counts the positive integers less than n that are 
 # relatively primes to n (coprimes)
 def totient(n):
 	return len([i for i in xrange(1, n) if coprimes(i, n)]) if n > 1 else 1
-
 
 # Coprimes: 
 # Two numbers are coprimes where the only divisor in common is 1
@@ -39,9 +40,11 @@ def coprimes(a, b):
 	return list(set(aDiv).intersection(set(bDiv))) == [1]
 
 def isPrime(num):
+	if num == 1:
+		return False
 	if num % 2 == 0:
 		return False
-	for i in xrange(3, int(sqrt(num)) + 1, 2):
+	for i in xrange(3, int(pow(num, 0.5)) + 1, 2):
 		if num % i == 0:
 			return False
 	return True
@@ -65,23 +68,56 @@ def primeGenerator(digits = 100):
 			num -= int("1" + "0" * (digits))
 	return num
 
-def mainRSA(digits = 16):
+
+# Encryption 
+# C = M^e mod n
+def encrypt(plain, e, n):
+	return pow(plain, e) % n
+
+# Decryption
+# M = C^d mod n
+def decrypt(enc, d, n):
+	return pow(enc, d) % n
+
+def mainRSA(digits = 16, plain = 277):
+	# prime p
 	p = primeGenerator(digits)
+	print "p =", p
+
+	# prime q
 	q = primeGenerator(digits)
 	while p == q:
 		q = primeGenerator(digits) 
-	n = p * q
-	coprimes = (p - 1) * (q - 1)
-	print "p =", p
 	print "q =", q
+	
+	# n = p * q (this is the future module)
+	n = p * q
 	print "n = p * q =", n
-	print "coprimes(n) =", coprimes
+	
+	# lets calcule the totient 
+	# must be the sabe as totient(n = p * q)
+	totient = (p - 1) * (q - 1)
+	print "totient(n) =", totient
+
+	e = pow(2, 16) + 1
+	print "e = 2 ^ 16 + 1 =", e
+
+	# calculate d
+	d = calculateD(e, totient)
+	print "d =", d
+
+	enc = encrypt(plain, d, n)
+	dec = decrypt(enc, e, n)
+
+	print plain, "-> encrypted ->", enc, "-> decrypted again ->", dec
+
+	return dec
+
 
 
 def main():
-	#print coprimes(3,5)
-	test(16)
-	#mainRSA()
+	# test(16)
+	mainRSA(3)
 
 def test(digits = 16):
 	print "---------- TEST TOTIENT ----------"
@@ -120,7 +156,7 @@ def testTotient():
 	print "CORRECT" if totient(57) == 36 else "INCORRECT", "TOTIENT"
 	print "CORRECT" if totient(80) == 32 else "INCORRECT", "TOTIENT"
 	print "CORRECT" if totient(97) == 96 else "INCORRECT", "TOTIENT"
-	print "CORRECT" if totient(99) ====  60 else "INCORRECT", "TOTIENT"
+	print "CORRECT" if totient(99) ==  60 else "INCORRECT", "TOTIENT"
 
 def testCoprimes():
 	print "CORRECT" if coprimes(14, 15) == True else "INCORRECT"
