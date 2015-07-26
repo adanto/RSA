@@ -10,16 +10,32 @@
 
 from numpy import random
 
+def strToInt(txt):
+	v = 0
+	for i in txt:
+		v *= 27
+		v += translate(i)
+	return v
+
+
+def intToStr(li):
+	txt = ""
+	while li > 0:
+		txt = reTranslate(li % 27) + txt
+		li -= li % 27
+		li /= 27
+	return  txt
+
 # Makes n ** exp % mod more quick. Tested in exponentAlgTest.py
 def expModF(n, exp, mod):
 	n = n % mod
 	if n == 0:
 		return 0
 	if exp == 1:
-		return n
+		return n % mod
 	while exp > 1:
 		if exp % 2 == 0:
-			return expModF(n * n % mod, exp / 2, mod)
+			return expModF(n * n, exp / 2, mod) % mod
 		else:
 			return (n * expModF(n, exp - 1, mod)) % mod
 
@@ -101,13 +117,14 @@ def primeGenerator(digits = 100):
 # C = M^e mod n
 def encrypt(plain, e, n):
 	return expModF(plain, e, n)
+	# return pow(plain, e) % n
 
 # Decryption
 # M = C^d mod n
 def decrypt(enc, d, n):
-	return expModF(enc, d, n)
+	return (enc ** d % n)
 
-def mainRSA(digits = 16, plain = 2):
+def mainRSA(digits = 16, plain = "2"):
 	# prime p
 	p = primeGenerator(digits)
 	print "p =", p
@@ -133,22 +150,93 @@ def mainRSA(digits = 16, plain = 2):
 	# calculate d
 	d = egcd(e, totient)[1]
 	
+	# if negative d, we can obtain another d = totient + (negative d)
 	d = totient + d if d < 0 else d
 
 	print "d =", d
 
+	plain = strToInt(plain)
+
 	enc = encrypt(plain, d, n)
 	dec = decrypt(enc, e, n)
 
-	print plain, "-> encrypted ->", enc, "-> decrypted again ->", dec
-
+	print intToStr(plain), "-> encrypted ->", enc, "-> decrypted again ->", intToStr(dec)
 	return dec
 
+def translate(letter):
+	dic = {
+		"a": 1,
+		"b": 2,
+		"c": 3, 
+		"d": 4,
+		"e": 5,
+		"f": 6,
+		"g": 7,
+		"h": 8,
+		"i": 9,
+		"j": 10,
+		"k": 11,
+		"l": 12,
+		"m": 13,
+		"n": 14,
+		"o": 15,
+		"p": 16,
+		"q": 17,
+		"r": 18,
+		"s": 19,
+		"t": 20,
+		"u": 21,
+		"v": 22,
+		"w": 23,
+		"x": 24,
+		"y": 25,
+		"z": 26,
+		" ": 0
+	}
+	return dic[letter] if letter in dic else -1
 
+def reTranslate(letter):
+	dic = {
+		1 : "a",
+		2 : "b",
+		3 : "c", 
+		4 : "d",
+		5 : "e",
+		6 : "f",
+		7 : "g",
+		8 : "h",
+		9 : "i",
+		10 : "j",
+		11 : "k",
+		12 : "l",
+		13 : "m",
+		14 : "n",
+		15 : "o",
+		16 : "p",
+		17 : "q",
+		18 : "r",
+		19 : "s",
+		20 : "t",
+		21 : "u",
+		22 : "v",
+		23 : "w",
+		24 : "x",
+		25 : "y",
+		26 : "z",
+		0 : " "
+	}
+	return dic[letter] if letter in dic else -1
 
 def main():
-	test(16, 10, 277)
-	#mainRSA(3)
+	
+	plain = "hello this is a test"
+	
+	for i in xrange(1):
+		dig = 16	
+		mainRSA(dig, plain)
+		print "\n\n"
+
+	# test(16, 10, 277)
 
 
 def test(digits = 16, times = 10, plain = 277):
