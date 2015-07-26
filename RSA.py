@@ -10,6 +10,20 @@
 
 from numpy import random
 
+# Makes n ** exp % mod more quick. Tested in exponentAlgTest.py
+def expModF(n, exp, mod):
+	n = n % mod
+	if n == 0:
+		return 0
+	if exp == 1:
+		return n
+	while exp > 1:
+		if exp % 2 == 0:
+			return expModF(n * n % mod, exp / 2, mod)
+		else:
+			return (n * expModF(n, exp - 1, mod)) % mod
+
+
 # Extended Euclidean Algorithm 
 # from: https://en.m.wikibooks.org/wiki/Algorithm_Implementation/Matematics/Extended_Euclidean_algorithm
 # This function takes two different integers a, b and return a triple (g, x, y) such that
@@ -86,12 +100,12 @@ def primeGenerator(digits = 100):
 # Encryption 
 # C = M^e mod n
 def encrypt(plain, e, n):
-	return (plain ** e) % n
+	return expModF(plain, e, n)
 
 # Decryption
 # M = C^d mod n
 def decrypt(enc, d, n):
-	return (enc ** d) % n
+	return expModF(enc, d, n)
 
 def mainRSA(digits = 16, plain = 2):
 	# prime p
@@ -120,6 +134,10 @@ def mainRSA(digits = 16, plain = 2):
 	d = egcd(e, totient)[1]
 	print "d =", d
 
+	if d < 1:
+		print "ERROR, d < 0"
+		return
+
 	enc = encrypt(plain, d, n)
 	dec = decrypt(enc, e, n)
 
@@ -130,26 +148,26 @@ def mainRSA(digits = 16, plain = 2):
 
 
 def main():
-	#test(3)
-	mainRSA(5)
+	#test(4)
+	mainRSA(10)
 
 
 def test(digits = 16):
 	print "---------- TEST EGCD ----------"
 	testEGCD(digits)
 	print "------- TEST EGCD ENDED -------\n"
-	# print "---------- TEST TOTIENT ----------"
-	# testTotient()
-	# print "------- TEST TOTIENT ENDED -------\n"
-	# print "---------- TEST COPRIMES ----------"
-	# testCoprimes()
-	# print "------- TEST COPRIMES ENDED -------\n"
-	# print "---------- TEST DIGITS ----------"
-	# testDigits(digits)
-	# print "------- TEST DIGITS ENDED -------\n"
-	# print "---------- TEST DIGITS LEN ----------"
-	# testDigitsLen(digits)
-	# print "------- TEST DIGITS LEN ENDED -------\n"
+	print "---------- TEST TOTIENT ----------"
+	testTotient()
+	print "------- TEST TOTIENT ENDED -------\n"
+	print "---------- TEST COPRIMES ----------"
+	testCoprimes()
+	print "------- TEST COPRIMES ENDED -------\n"
+	print "---------- TEST DIGITS ----------"
+	testDigits(digits)
+	print "------- TEST DIGITS ENDED -------\n"
+	print "---------- TEST DIGITS LEN ----------"
+	testDigitsLen(digits)
+	print "------- TEST DIGITS LEN ENDED -------\n"
 	
 def testEGCD(digits = 4):	# prime p
 	for _ in xrange(10):
