@@ -86,14 +86,14 @@ def primeGenerator(digits = 100):
 # Encryption 
 # C = M^e mod n
 def encrypt(plain, e, n):
-	return pow(plain, e) % n
+	return (plain ** e) % n
 
 # Decryption
 # M = C^d mod n
 def decrypt(enc, d, n):
-	return pow(enc, d) % n
+	return (enc ** d) % n
 
-def mainRSA(digits = 16, plain = 277):
+def mainRSA(digits = 16, plain = 2):
 	# prime p
 	p = primeGenerator(digits)
 	print "p =", p
