@@ -190,8 +190,6 @@ def main():
 		with open(plainDoc, "r") as pDoc:
 			plain = pDoc.read()
 
-	print plain
-
 	a = mainRSA(dig, plain)
 	
 	with open("output.txt", 'wb') as f:
