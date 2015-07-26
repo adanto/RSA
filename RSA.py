@@ -8,11 +8,12 @@
 # In this case e = 2^16 + 1
 # Calculate d -> d * e = 1 (mod totient(n))
 
-
 from numpy import random
 
 # Extended Euclidean Algorithm 
 # from: https://en.m.wikibooks.org/wiki/Algorithm_Implementation/Matematics/Extended_Euclidean_algorithm
+# This function takes two different integers a, b and return a triple (g, x, y) such that
+# ax + by = gcd(a, b)
 def egcd(a, b):
 	x, y, u, v = 0, 1, 1, 0
 	while a != 0:
@@ -130,7 +131,7 @@ def mainRSA(digits = 16, plain = 277):
 
 def main():
 	# test(16)
-	mainRSA(5)
+	mainRSA(2)
 
 def test(digits = 16):
 	print "---------- TEST TOTIENT ----------"
