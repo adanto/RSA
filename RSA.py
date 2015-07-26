@@ -9,27 +9,8 @@
 # Calculate d -> d * e = 1 (mod totient(n))
 
 from numpy import random
+import sys
 
-def strToInt(txt, n):
-	l = []
-	v = 0
-	for i in txt:
-		v *= 27
-		v += translate(i)
-		if (v * 27) + 27 > n:
-			l.append(v)
-			v = 0
-	l.append(v)
-	return l
-
-
-def intToStr(li):
-	txt = ""
-	while li > 0:
-		txt = translate(li % 256) + txt
-		li -= li % 256
-		li /= 256
-	return  txt
 
 def strToIntB(txt, n):
 	l = []
@@ -194,79 +175,25 @@ def mainRSA(digits = 16, plain = "2"):
 		print "'" + intToStrB(block) + "'", "-> encrypted ->", enc, "-> decrypted again ->", "'" + intToStrB(dec) + "'"
 	return [intToStrB(i) for i in encryption], n, e, d
 
-def translate(letter):
-	dic = {
-		"a": 1,
-		"b": 2,
-		"c": 3, 
-		"d": 4,
-		"e": 5,
-		"f": 6,
-		"g": 7,
-		"h": 8,
-		"i": 9,
-		"j": 10,
-		"k": 11,
-		"l": 12,
-		"m": 13,
-		"n": 14,
-		"o": 15,
-		"p": 16,
-		"q": 17,
-		"r": 18,
-		"s": 19,
-		"t": 20,
-		"u": 21,
-		"v": 22,
-		"w": 23,
-		"x": 24,
-		"y": 25,
-		"z": 26,
-		" ": 0
-	}
-	return dic[letter] if letter in dic else 0
-
-def reTranslate(letter):
-	dic = {
-		1 : "a",
-		2 : "b",
-		3 : "c", 
-		4 : "d",
-		5 : "e",
-		6 : "f",
-		7 : "g",
-		8 : "h",
-		9 : "i",
-		10 : "j",
-		11 : "k",
-		12 : "l",
-		13 : "m",
-		14 : "n",
-		15 : "o",
-		16 : "p",
-		17 : "q",
-		18 : "r",
-		19 : "s",
-		20 : "t",
-		21 : "u",
-		22 : "v",
-		23 : "w",
-		24 : "x",
-		25 : "y",
-		26 : "z",
-		0 : " "
-	}
-	return dic[letter] if letter in dic else -1
 
 def main():
-	
-	plain = "Esto va a ser el test definitivo que vamos a utilizar para ver si realmente funciona. Estoy bastante emocionado! Pero bueno, a ver si tenemos razn para estarlo o que XDD."
-	for i in xrange(1):
-	#while True:
-		dig = 16
-		a = mainRSA(dig, plain)
-		
 
+	args = len(sys.argv)
+	doc = sys.argv[1] if args > 1 else "output.txt"
+	dig = int(sys.argv[2] if args > 2 else 16)
+	plainDoc = sys.argv[3] if args > 3 else -1
+	if plainDoc == -1:
+		print "Please, enter your text to encrypt"
+		plain = raw_input()
+	else:
+		plain = ""
+		with open(plainDoc, "r") as pDoc:
+			plain = pDoc.read()
+
+	print plain
+
+	a = mainRSA(dig, plain)
+	
 	with open("output.txt", 'wb') as f:
 		f.write('plain text = ' + plain + '\n')
 		f.write('cipher text = ' + (''.join(a[0]) + '\n'))
