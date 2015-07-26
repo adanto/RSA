@@ -229,14 +229,14 @@ def reTranslate(letter):
 
 def main():
 	
-	plain = "hello this is a test"
+	# plain = "hello this is a test"
 	
-	for i in xrange(1):
-		dig = 16	
-		mainRSA(dig, plain)
-		print "\n\n"
+	# for i in xrange(1):
+	# 	dig = 16	
+	# 	mainRSA(dig, plain)
+	# 	print "\n\n"
 
-	# test(16, 10, 277)
+	test(16, 10, 277)
 
 
 def test(digits = 16, times = 10, plain = 277):
