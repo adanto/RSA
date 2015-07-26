@@ -26,6 +26,27 @@ def strToInt(txt, n):
 def intToStr(li):
 	txt = ""
 	while li > 0:
+		txt = (li % 256) + txt
+		li -= li % 256
+		li /= 256
+	return  txt
+
+def strToIntB(txt, n):
+	l = []
+	v = 0
+	for i in txt:
+		v *= 256
+		v += chr(i)
+		if (v * 256) + 256 > n:
+			l.append(v)
+			v = 0
+	l.append(v)
+	return l
+
+
+def intToStrB(li):
+	txt = ""
+	while li > 0:
 		txt = reTranslate(li % 27) + txt
 		li -= li % 27
 		li /= 27
@@ -121,8 +142,8 @@ def primeGenerator(digits = 100):
 # Encryption 
 # C = M^e mod n
 def encrypt(plain, e, n):
-	#return expModF(plain, e, n)
-	return pow(plain, e) % n
+	return expModF(plain, e, n)
+	#return pow(plain, e) % n
 
 # Decryption
 # M = C^d mod n
@@ -171,7 +192,7 @@ def mainRSA(digits = 16, plain = "2"):
 		dec = decrypt(enc, e, n)
 
 		print "'" + intToStr(block) + "'", "-> encrypted ->", enc, "-> decrypted again ->", "'" + intToStr(dec) + "'"
-	return [intToStr(i) for i in encryption], n, totient, d
+	return [intToStr(i) for i in encryption], n, e, d
 
 def translate(letter):
 	dic = {
@@ -203,7 +224,7 @@ def translate(letter):
 		"z": 26,
 		" ": 0
 	}
-	return dic[letter] if letter in dic else -1
+	return dic[letter] if letter in dic else 0
 
 def reTranslate(letter):
 	dic = {
@@ -239,14 +260,21 @@ def reTranslate(letter):
 
 def main():
 	
-	plain = "hello world this is a test to see of we can encrypt any len text with letters and spaces"
-	
+	plain = "1565461616545534&%&/%$6545647567 .,- .,.-,- ".lower()
 	for i in xrange(1):
 	#while True:
-		dig = 2
+		dig = 5
 		a = mainRSA(dig, plain)
-		print a,"\n\n"
+		print "".join(a[0]),"\n\n"
 		
+
+	with open("output.txt", 'wb') as f:
+		f.write('plain text = ' + plain + '\n')
+		f.write('cipher text = ' + (''.join(a[0]) + '\n'))
+		f.write('n = ' + str(a[1]) + '\n')
+		f.write('e = ' + str(a[2]) + '\n')
+		f.write('d = ' + str(a[3]) + '\n')
+
 	# test(10, 10, 277)
 
 
