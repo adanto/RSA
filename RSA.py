@@ -132,11 +132,10 @@ def mainRSA(digits = 16, plain = 2):
 
 	# calculate d
 	d = egcd(e, totient)[1]
-	print "d =", d
+	
+	d = totient + d if d < 0 else d
 
-	if d < 1:
-		print "ERROR, d < 0"
-		return
+	print "d =", d
 
 	enc = encrypt(plain, d, n)
 	dec = decrypt(enc, e, n)
@@ -148,11 +147,14 @@ def mainRSA(digits = 16, plain = 2):
 
 
 def main():
-	#test(4)
-	mainRSA(10)
+	test(16, 10, 277)
+	#mainRSA(3)
 
 
-def test(digits = 16):
+def test(digits = 16, times = 10, plain = 277):
+	print "---------- TEST ENC DEC ----------"
+	testEncDec(digits, times)
+	print "------- TEST ENC DEC ENDED -------\n"
 	print "---------- TEST EGCD ----------"
 	testEGCD(digits)
 	print "------- TEST EGCD ENDED -------\n"
@@ -169,8 +171,29 @@ def test(digits = 16):
 	testDigitsLen(digits)
 	print "------- TEST DIGITS LEN ENDED -------\n"
 	
-def testEGCD(digits = 4):	# prime p
-	for _ in xrange(10):
+def testEncDec(digits = 10, times = 10):
+	for i in xrange(times):
+		plain = random.randint(0, 10000000000000000)
+		print "plain text ->", plain
+		p = primeGenerator(digits)
+		q = primeGenerator(digits)
+		while p == q:
+			q = primeGenerator(digits) 
+		n = p * q
+		totient = (p - 1) * (q - 1)
+		e = pow(2, 16) + 1
+		d = egcd(e, totient)[1]
+		d = totient + d if d < 0 else d
+		enc = encrypt(plain, d, n)
+		dec = decrypt(enc, e, n)
+		if dec == plain:
+			print plain, "->", enc, "->", dec, "\n", "CORRECT", str(100.0 * (1 + i)/times) + "%\n"
+		else:
+			print "ERROR"
+			break
+
+def testEGCD(digits = 4, times = 10):	# prime p
+	for i in xrange(times ):
 		p = primeGenerator(digits)
 		# prime q
 		q = primeGenerator(digits)
@@ -184,11 +207,15 @@ def testEGCD(digits = 4):	# prime p
 		totient = (p - 1) * (q - 1)
 		e = pow(2, 16) + 1
 		# calculate d
-		d = egcd(e, totient)
+		d = egcd(e, totient)[1]
+		d = totient + d if d < 0 else d
 		print "d * e = 1 mod tot --->", d, e, totient
-		d = calculateD(e, totient)
-		print "d =", d,"\n"
-
+		if d * e % totient == 1:
+			print "CORRECT", str(100.0 * (1 + i) / times) + "%"
+		else:
+			print "ERROR" 
+			break
+		
 def testTotient():
 	print "CORRECT" if totient(1) == 1 else "INCORRECT", "TOTIENT"
 	print "CORRECT" if totient(2) == 1 else "INCORRECT", "TOTIENT"
@@ -221,8 +248,8 @@ def testCoprimes():
 	print "CORRECT" if coprimes(9, 9) == False else "INCORRECT"
 	print "CORRECT" if coprimes(10, 11) == True else "INCORRECT"
 
-def testDigits(digits):
-	for _ in xrange(5):
+def testDigits(digits, times = 10):
+	for _ in xrange(times):
 		a = primeGenerator(digits)
 		print a, len(str(a)) == digits
 		if len(str(a)) != digits:
