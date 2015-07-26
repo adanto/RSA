@@ -117,7 +117,7 @@ def mainRSA(digits = 16, plain = 277):
 	print "e = 2 ^ 16 + 1 =", e
 
 	# calculate d
-	d = calculateD(e, totient)
+	d = egcd(e, totient)[1]
 	print "d =", d
 
 	enc = encrypt(plain, d, n)
@@ -130,24 +130,46 @@ def mainRSA(digits = 16, plain = 277):
 
 
 def main():
-	# test(16)
-	mainRSA(2)
+	#test(3)
+	mainRSA(5)
+
 
 def test(digits = 16):
-	print "---------- TEST TOTIENT ----------"
-	testTotient()
-	print "------- TEST TOTIENT ENDED -------\n"
-	print "---------- TEST COPRIMES ----------"
-	testCoprimes()
-	print "------- TEST COPRIMES ENDED -------\n"
-	print "---------- TEST DIGITS ----------"
-	testDigits(digits)
-	print "------- TEST DIGITS ENDED -------\n"
-	print "---------- TEST DIGITS LEN ----------"
-	testDigitsLen(digits)
-	print "------- TEST DIGITS LEN ENDED -------\n"
+	print "---------- TEST EGCD ----------"
+	testEGCD(digits)
+	print "------- TEST EGCD ENDED -------\n"
+	# print "---------- TEST TOTIENT ----------"
+	# testTotient()
+	# print "------- TEST TOTIENT ENDED -------\n"
+	# print "---------- TEST COPRIMES ----------"
+	# testCoprimes()
+	# print "------- TEST COPRIMES ENDED -------\n"
+	# print "---------- TEST DIGITS ----------"
+	# testDigits(digits)
+	# print "------- TEST DIGITS ENDED -------\n"
+	# print "---------- TEST DIGITS LEN ----------"
+	# testDigitsLen(digits)
+	# print "------- TEST DIGITS LEN ENDED -------\n"
 	
-
+def testEGCD(digits = 4):	# prime p
+	for _ in xrange(10):
+		p = primeGenerator(digits)
+		# prime q
+		q = primeGenerator(digits)
+		while p == q:
+			q = primeGenerator(digits) 
+		
+		# n = p * q (this is the future module)
+		n = p * q		
+		# lets calcule the totient 
+		# must be the sabe as totient(n = p * q)
+		totient = (p - 1) * (q - 1)
+		e = pow(2, 16) + 1
+		# calculate d
+		d = egcd(e, totient)
+		print "d * e = 1 mod tot --->", d, e, totient
+		d = calculateD(e, totient)
+		print "d =", d,"\n"
 
 def testTotient():
 	print "CORRECT" if totient(1) == 1 else "INCORRECT", "TOTIENT"
