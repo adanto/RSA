@@ -10,12 +10,17 @@
 
 from numpy import random
 
-def strToInt(txt):
+def strToInt(txt, n):
+	l = []
 	v = 0
 	for i in txt:
 		v *= 27
 		v += translate(i)
-	return v
+		if (v * 27) + 27 > n:
+			l.append(v)
+			v = 0
+	l.append(v)
+	return l
 
 
 def intToStr(li):
@@ -116,8 +121,8 @@ def primeGenerator(digits = 100):
 # Encryption 
 # C = M^e mod n
 def encrypt(plain, e, n):
-	return expModF(plain, e, n)
-	# return pow(plain, e) % n
+	#return expModF(plain, e, n)
+	return pow(plain, e) % n
 
 # Decryption
 # M = C^d mod n
@@ -155,13 +160,18 @@ def mainRSA(digits = 16, plain = "2"):
 
 	print "d =", d
 
-	plain = strToInt(plain)
 
-	enc = encrypt(plain, d, n)
-	dec = decrypt(enc, e, n)
+	plain = strToInt(plain, n)
 
-	print intToStr(plain), "-> encrypted ->", enc, "-> decrypted again ->", intToStr(dec)
-	return dec
+	encryption = []
+	for block in plain:
+
+		enc = encrypt(block, d, n)
+		encryption.append(enc)
+		dec = decrypt(enc, e, n)
+
+		print "'" + intToStr(block) + "'", "-> encrypted ->", enc, "-> decrypted again ->", "'" + intToStr(dec) + "'"
+	return [intToStr(i) for i in encryption], n, totient, d
 
 def translate(letter):
 	dic = {
@@ -229,14 +239,15 @@ def reTranslate(letter):
 
 def main():
 	
-	# plain = "hello this is a test"
+	plain = "hello world this is a test to see of we can encrypt any len text with letters and spaces"
 	
-	# for i in xrange(1):
-	# 	dig = 16	
-	# 	mainRSA(dig, plain)
-	# 	print "\n\n"
-
-	test(16, 10, 277)
+	for i in xrange(1):
+	#while True:
+		dig = 2
+		a = mainRSA(dig, plain)
+		print a,"\n\n"
+		
+	# test(10, 10, 277)
 
 
 def test(digits = 16, times = 10, plain = 277):
