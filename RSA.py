@@ -26,7 +26,7 @@ def strToInt(txt, n):
 def intToStr(li):
 	txt = ""
 	while li > 0:
-		txt = (li % 256) + txt
+		txt = translate(li % 256) + txt
 		li -= li % 256
 		li /= 256
 	return  txt
@@ -36,7 +36,7 @@ def strToIntB(txt, n):
 	v = 0
 	for i in txt:
 		v *= 256
-		v += chr(i)
+		v += ord(i)
 		if (v * 256) + 256 > n:
 			l.append(v)
 			v = 0
@@ -47,9 +47,9 @@ def strToIntB(txt, n):
 def intToStrB(li):
 	txt = ""
 	while li > 0:
-		txt = reTranslate(li % 27) + txt
-		li -= li % 27
-		li /= 27
+		txt = chr(li % 256) + txt
+		li -= li % 256
+		li /= 256
 	return  txt
 
 # Makes n ** exp % mod more quick. Tested in exponentAlgTest.py
@@ -182,7 +182,7 @@ def mainRSA(digits = 16, plain = "2"):
 	print "d =", d
 
 
-	plain = strToInt(plain, n)
+	plain = strToIntB(plain, n)
 
 	encryption = []
 	for block in plain:
@@ -191,8 +191,8 @@ def mainRSA(digits = 16, plain = "2"):
 		encryption.append(enc)
 		dec = decrypt(enc, e, n)
 
-		print "'" + intToStr(block) + "'", "-> encrypted ->", enc, "-> decrypted again ->", "'" + intToStr(dec) + "'"
-	return [intToStr(i) for i in encryption], n, e, d
+		print "'" + intToStrB(block) + "'", "-> encrypted ->", enc, "-> decrypted again ->", "'" + intToStrB(dec) + "'"
+	return [intToStrB(i) for i in encryption], n, e, d
 
 def translate(letter):
 	dic = {
@@ -260,12 +260,11 @@ def reTranslate(letter):
 
 def main():
 	
-	plain = "1565461616545534&%&/%$6545647567 .,- .,.-,- ".lower()
+	plain = "Esto va a ser el test definitivo que vamos a utilizar para ver si realmente funciona. Estoy bastante emocionado! Pero bueno, a ver si tenemos razn para estarlo o que XDD."
 	for i in xrange(1):
 	#while True:
-		dig = 5
+		dig = 16
 		a = mainRSA(dig, plain)
-		print "".join(a[0]),"\n\n"
 		
 
 	with open("output.txt", 'wb') as f:
