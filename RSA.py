@@ -177,7 +177,6 @@ def mainRSA(digits = 16, plain = "2"):
 
 
 def main():
-
 	args = len(sys.argv)
 	doc = sys.argv[1] if args > 1 else "output.txt"
 	dig = int(sys.argv[2] if args > 2 else 16)
@@ -199,7 +198,8 @@ def main():
 		f.write('e = ' + str(a[2]) + '\n')
 		f.write('d = ' + str(a[3]) + '\n')
 
-	test(10, 10, 277)
+	if args > 4:
+		test(10, 10, 277)
 
 
 def test(digits = 16, times = 10, plain = 277):
