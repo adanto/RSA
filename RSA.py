@@ -199,7 +199,7 @@ def main():
 		f.write('e = ' + str(a[2]) + '\n')
 		f.write('d = ' + str(a[3]) + '\n')
 
-	# test(10, 10, 277)
+	test(10, 10, 277)
 
 
 def test(digits = 16, times = 10, plain = 277):
