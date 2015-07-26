@@ -11,6 +11,17 @@
 
 from numpy import random
 
+# Extended Euclidean Algorithm 
+# from: https://en.m.wikibooks.org/wiki/Algorithm_Implementation/Matematics/Extended_Euclidean_algorithm
+def egcd(a, b):
+	x, y, u, v = 0, 1, 1, 0
+	while a != 0:
+		q, r = b // a, b % a
+		m, n = x - u * q, y - v * q
+		b, a, x, y, u, v = a, r, u, v, m, n
+	gcd = b
+	return gcd, x, y
+
 # Last method that has to be correctly implemented
 # with the EXTENDED EUCLIDEAN ALGORITHM
 def calculateD(e, module):
@@ -118,8 +129,8 @@ def mainRSA(digits = 16, plain = 277):
 
 
 def main():
-	test(16)
-	mainRSA(4)
+	# test(16)
+	mainRSA(5)
 
 def test(digits = 16):
 	print "---------- TEST TOTIENT ----------"
